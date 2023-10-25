@@ -12,7 +12,39 @@ python = "^3.11"
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
 dvc = "^3.27.0"
+pre-commit = "^3.5.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+
+fixable = [
+    "I",  # isort
+    "F",  # autoflake
+    "W",  # autopep8
+]
+
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+]
+
+line-length = 88
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+target-version = "py311"
+
+
+[tool.mypy]
+ignore_missing_imports = "True"
+namespace_packages = true

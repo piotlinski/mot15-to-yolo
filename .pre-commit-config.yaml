@@ -1,0 +1,43 @@
+default_language_version:
+  python: python3.11
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^\.bumpversion.cfg
+        stages: [commit, manual]
+      - id: end-of-file-fixer
+        stages: [commit, manual]
+      - id: check-yaml
+        stages: [commit, manual]
+      - id: check-added-large-files
+        stages: [commit, manual]
+      - id: debug-statements
+        stages: [commit, manual]
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.3
+    hooks:
+      - id: prettier
+        args: [--prose-wrap=always, --print-width=88]
+
+  - repo: https://github.com/psf/black
+    rev: 23.10.1
+    hooks:
+      - id: black
+        types: [python]
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.1.2
+    hooks:
+      - id: ruff
+        types: [python]
+        args: [--fix]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.6.1
+    hooks:
+      - id: mypy
+        types: [python]
