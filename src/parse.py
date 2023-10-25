@@ -39,7 +39,7 @@ def parse_mot15_gt(in_file: Path, length: int) -> Iterable[dict[str, list[Any]]]
                     yield annotation
                     current_frame += 1
                     annotation = {"bboxes": [], "classes": [], "ids": []}
-            annotation["bboxes"].append([int(x1), int(y1), int(w), int(h)])
+            annotation["bboxes"].append([float(x1), float(y1), float(w), float(h)])
             annotation["classes"].append(0)
             annotation["ids"].append(obj_id)
 

@@ -8,6 +8,7 @@ packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+tqdm = "^4.66.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"
