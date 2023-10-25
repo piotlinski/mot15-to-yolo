@@ -18,3 +18,9 @@ stages:
           - VAL_SEQUENCES
     outs:
       - data
+  tar-mot15:
+    cmd: tar -C data -zcvf mot15.tar.gz .
+    deps:
+      - data
+    outs:
+      - mot15.tar.gz

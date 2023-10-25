@@ -40,3 +40,16 @@ stages:
       md5: b02cae749e18968be4e084714caaa00f.dir
       size: 575386743
       nfiles: 11004
+  tar-mot15:
+    cmd: tar -C data -zcvf mot15.tar.gz .
+    deps:
+    - path: data
+      hash: md5
+      md5: b02cae749e18968be4e084714caaa00f.dir
+      size: 575386743
+      nfiles: 11004
+    outs:
+    - path: mot15.tar.gz
+      hash: md5
+      md5: 3580a17a538cf017b1e8fd89c4199ef5
+      size: 563074170
