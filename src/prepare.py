@@ -18,7 +18,7 @@ def prepare_obj_data(
         f"train = {train}\n"
         f"valid = {valid}\n"
         f"names = {names}\n"
-        f"backup = backup/\n"
+        f"backup = data/\n"
     )
 
 
