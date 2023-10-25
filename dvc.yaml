@@ -9,3 +9,12 @@ stages:
       - MOT15.zip
     outs:
       - MOT15
+  parse-mot15:
+    cmd: python src/prepare.py MOT15/train data
+    deps:
+      - MOT15
+    params:
+      - src/config.py:
+          - VAL_SEQUENCES
+    outs:
+      - data

@@ -20,3 +20,23 @@ stages:
       md5: dc3b75af398d98f9204b5b61dbbe80e6.dir
       size: 1334339107
       nfiles: 11338
+  parse-mot15:
+    cmd: python src/prepare.py MOT15/train data
+    deps:
+    - path: MOT15
+      hash: md5
+      md5: dc3b75af398d98f9204b5b61dbbe80e6.dir
+      size: 1334339107
+      nfiles: 11338
+    params:
+      src/config.py:
+        VAL_SEQUENCES:
+        - KITTI-17
+        - ADL-Rundle-6
+        - ETH-Sunnyday
+    outs:
+    - path: data
+      hash: md5
+      md5: b02cae749e18968be4e084714caaa00f.dir
+      size: 575386743
+      nfiles: 11004
