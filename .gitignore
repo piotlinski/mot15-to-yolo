@@ -251,3 +251,5 @@ dmypy.json
 # Nixpkgs manager
 *.nix
 
+/MOT15.zip
+/MOT15

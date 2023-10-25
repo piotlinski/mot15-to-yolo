@@ -1,0 +1,22 @@
+schema: '2.0'
+stages:
+  download-mot15:
+    cmd: wget "https://motchallenge.net/data/MOT15.zip"
+    outs:
+    - path: MOT15.zip
+      hash: md5
+      md5: 5f9c6255e3b042430d92ea1ef98b8d20
+      size: 1310994213
+  extract-mot15:
+    cmd: unzip MOT15.zip
+    deps:
+    - path: MOT15.zip
+      hash: md5
+      md5: 5f9c6255e3b042430d92ea1ef98b8d20
+      size: 1310994213
+    outs:
+    - path: MOT15
+      hash: md5
+      md5: dc3b75af398d98f9204b5b61dbbe80e6.dir
+      size: 1334339107
+      nfiles: 11338
