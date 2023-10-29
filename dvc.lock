@@ -37,19 +37,19 @@ stages:
     outs:
     - path: data
       hash: md5
-      md5: b02cae749e18968be4e084714caaa00f.dir
-      size: 575386743
-      nfiles: 11004
+      md5: ed4ce73a97e6aacb5e816f9c53cebcb8.dir
+      size: 584153257
+      nfiles: 11015
   tar-mot15:
     cmd: tar -C data -zcvf mot15.tar.gz .
     deps:
     - path: data
       hash: md5
-      md5: b02cae749e18968be4e084714caaa00f.dir
-      size: 575386743
-      nfiles: 11004
+      md5: ed4ce73a97e6aacb5e816f9c53cebcb8.dir
+      size: 584153257
+      nfiles: 11015
     outs:
     - path: mot15.tar.gz
       hash: md5
-      md5: 3580a17a538cf017b1e8fd89c4199ef5
-      size: 563074170
+      md5: 5db0373798ab5375c8129564236b00ce
+      size: 563641323

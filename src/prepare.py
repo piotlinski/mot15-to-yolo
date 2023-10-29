@@ -1,5 +1,7 @@
 import argparse
+import json
 import shutil
+from itertools import islice
 from pathlib import Path
 from typing import Any
 
@@ -45,43 +47,79 @@ def process_directory(
     return ini, list(yolo_gt)
 
 
-def process_split(split_directory: Path, sequences: list[Path]):
+def batched(iterable, n):
+    """Batch data into lists of length n. The last batch may be shorter.
+    (source: itertools recipes)"""
+    it = iter(iterable)
+    while True:
+        batch = list(islice(it, n))
+        if not batch:
+            return
+        yield batch
+
+
+def process_split(
+    split_directory: Path, sequences: list[Path], length: int | None = None
+):
     split = []
     split_directory.mkdir(exist_ok=True, parents=True)
 
     for seq in tqdm(
         sequences, desc=f"Processing {split_directory.name} split", leave=False
     ):
-        seq_dir = split_directory / seq.name
-        seq_dir.mkdir(exist_ok=True, parents=True)
-
         ini, yolo_gt = process_directory(seq)
-        for idx in trange(ini["length"], desc=f"Processing {seq.name}", leave=False):
-            filename = f"{idx + 1:06d}{ini['extension']}"
-            in_filename = ini["directory"] / filename
-            out_filename = seq_dir / filename
-            shutil.copy(in_filename, out_filename)
-            split.append(out_filename)
+        batch_length = length or ini["length"]
 
-            out_txt = out_filename.with_suffix(".txt")
-            with open(out_txt, "w") as fp:
-                fp.write(prepare_txt(yolo_gt[idx]))
+        for idx, subseq in enumerate(
+            batched(range(ini["length"]), batch_length), start=1
+        ):
+            if len(subseq) < batch_length:
+                print(
+                    f"Skipping {seq.name} subsequence of length {len(subseq)} "
+                    f"since it's shorter than {batch_length}"
+                )
+                continue
+
+            seq_name = f"{seq.name}_{idx}" if length is None else seq.name
+            seq_dir = split_directory / seq_name
+            seq_dir.mkdir(exist_ok=True, parents=True)
+            annotations = []
+
+            for subidx in trange(
+                batch_length, desc=f"Processing {seq.name} - subseq {idx}", leave=False
+            ):
+                filename = f"{subidx + 1:06d}{ini['extension']}"
+                in_filename = ini["directory"] / filename
+                out_filename = seq_dir / filename
+
+                shutil.copy(in_filename, out_filename)
+                split.append(out_filename)
+                gt = yolo_gt[batch_length * (idx - 1) + subidx]
+                annotations.append(gt)
+
+                out_txt = out_filename.with_suffix(".txt")
+                with open(out_txt, "w") as fp:
+                    fp.write(prepare_txt(gt))
+
+            with seq_dir.joinpath("annotations.json").open("w") as fp:
+                json.dump(annotations, fp, indent=4)
+
     return split
 
 
-def prepare_dataset(directory: Path, output_directory: Path):
+def prepare_dataset(directory: Path, output_directory: Path, length: int | None = None):
     sequences = [seq for seq in sorted(directory.iterdir()) if seq.is_dir()]
     train_sequences = [seq for seq in sequences if seq.name not in VAL_SEQUENCES]
     val_sequences = [seq for seq in sequences if seq.name in VAL_SEQUENCES]
 
     # prepare train dataset
-    train = process_split(output_directory / "train", train_sequences)
+    train = process_split(output_directory / "train", train_sequences, length)
     train_txt = output_directory / "train.txt"
     with open(train_txt, "w") as fp:
         fp.write("\n".join(str(path) for path in train))
 
     # prepare val dataset
-    val = process_split(output_directory / "test", val_sequences)
+    val = process_split(output_directory / "test", val_sequences, length)
     val_txt = output_directory / "test.txt"  # mismatch required by YOLRO
     with open(val_txt, "w") as fp:
         fp.write("\n".join(str(path) for path in val))
@@ -103,6 +141,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("input_directory", type=Path)
     parser.add_argument("output_directory", type=Path)
+    parser.add_argument("--length", type=int, default=None)
     args = parser.parse_args()
 
-    prepare_dataset(args.input_directory, args.output_directory)
+    prepare_dataset(args.input_directory, args.output_directory, length=args.length)
